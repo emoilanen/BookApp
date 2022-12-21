@@ -5,6 +5,7 @@ import BookForm from './components/bookForm/BookForm';
 import {fetchAllBooks} from './apis/bookApi';
 
 export interface Book {
+  id?: string;
   title: string;
   author: string;
   description: string;
@@ -37,8 +38,7 @@ const App = () => {
 
   return (
     <Container>
-      { formOpen &&
-        <BookForm book={ editableBook } /> }
+      <BookForm book={ editableBook } fetchBooks={fetchBooks} />
       <BookTable books={ books } openForm={ openForm } />
     </Container>
   );

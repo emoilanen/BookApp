@@ -21,8 +21,8 @@ export interface ButtonProps {
 
 const Button = ({text, color, onClick, ...props}:ButtonProps) => {
 	return <FormButton
-		color={ color }
-	onClick={ onClick}>
+		color={color}
+		onClick={onClick}>
 		{ text }
 	</FormButton>;
 };
