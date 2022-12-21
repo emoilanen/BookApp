@@ -12,23 +12,22 @@ import { useCallback, useState } from 'react';
 
 export interface BookTableProps {
 	books: Book[] | [];
+	openForm: (book: Book) => void;
 }
 
-const BookTable = ({books}: BookTableProps) => {
+const BookTable = ({books, openForm}: BookTableProps) => {
 
-	const [formOpen, setFormOpen] = useState<Boolean>(false);
-
-	const openForm = useCallback((book: Book) => {
-		setFormOpen((formOpen) => !formOpen);
-	},[setFormOpen]);
+	const handleOpenForm = useCallback((book: Book) => {
+		openForm(book);
+	},[openForm]);
 
   return (
     <TableContainer component={Paper}>
       <Table>
         <TableHead>
-          <TableRow>
-            <TableCell>Title</TableCell>
-						<TableCell>Author</TableCell>
+          <TableRow sx={{backgroundColor: 'lightGray'}}>
+            <TableCell sx={{fontWeight: 'bold'}}>Title</TableCell>
+						<TableCell sx={{fontWeight: 'bold'}}>Author</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -37,7 +36,7 @@ const BookTable = ({books}: BookTableProps) => {
             <TableRow
               key={book.title}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            	onClick={()=> openForm(book) }
+            	onClick={()=> handleOpenForm(book) }
 							style={{cursor: "pointer"}}
 						>
 							<TableCell>{book.title}</TableCell>

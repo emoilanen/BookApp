@@ -1,8 +1,8 @@
-import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
 import Container from './components/layout/Container';
 import BookTable from './components/bookTable/BookTable';
 import BookForm from './components/bookForm/BookForm';
+import {fetchAllBooks} from './apis/bookApi';
 
 export interface Book {
   title: string;
@@ -11,25 +11,35 @@ export interface Book {
 }
 
 const App = () => {
-   const [ books, setBooks ] = useState<Book[] | []>([]);
-  const baseApiUrl = 'http://localhost:8080/api'
+  const [ books, setBooks ] = useState<Book[] | []>([]);
+  const [formOpen, setFormOpen] = useState<Boolean>(false);
+  const [ editableBook, setEditableBook ] = useState<Book>();
 
   useEffect(() => {
     fetchBooks();
   }, []);
 
-  const fetchBooks = useCallback(() => {
-      axios.get(`${baseApiUrl}/books`).then((res) => {
-      setBooks(res.data)
-      }).catch(err => {
-        console.error('Error while fetching books');
-    });
+  const fetchBooks = useCallback(async () => {
+    try {
+      const allBooks = await fetchAllBooks();
+      if (allBooks) {
+        setBooks(allBooks);
+      }
+    } catch (error)  {
+        console.error('Error while fetching books', error);
+    }
   }, [setBooks]);
+
+  const openForm = useCallback((book: Book) => {
+    setFormOpen(() => !formOpen);
+    setEditableBook(book);
+  },[formOpen]);
 
   return (
     <Container>
-      <BookTable books={books}/>
-      <BookForm />
+      { formOpen &&
+        <BookForm book={ editableBook } /> }
+      <BookTable books={ books } openForm={ openForm } />
     </Container>
   );
 }
