@@ -39,6 +39,7 @@ const BookForm = ({book, fetchBooks}: BookFormProps) => {
 		});
 	},[book]);
 
+	
 	const handleEditFormField = useCallback((e: any, inputField: InputField) => {
 		const inputValue = e.target.value;
 
@@ -57,6 +58,7 @@ const BookForm = ({book, fetchBooks}: BookFormProps) => {
 		}
 	}, [currentBook]);
 
+
 	const handleAddNew = useCallback(async () => {
 		try {
 			const response = await saveNewBook(currentBook);
@@ -69,6 +71,7 @@ const BookForm = ({book, fetchBooks}: BookFormProps) => {
 		}
 	}, [currentBook, fetchBooks]);
 
+
 	const handleUpdate = useCallback(async () => {
 		try {
 			await updateBook(currentBook);
@@ -76,6 +79,7 @@ const BookForm = ({book, fetchBooks}: BookFormProps) => {
 			console.error('Error while saving new book', err);
 		}
 	}, [currentBook]);
+
 
 	const handleDelete = useCallback(async () => {
 		if (currentBook?.id) {
