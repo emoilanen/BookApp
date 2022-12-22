@@ -1,4 +1,4 @@
-const { getAllBooks, saveNewBook } = require('../services/bookService');
+const { getAllBooks, saveNewBook, deleteOneBook } = require('../services/bookService');
 
 const bookRouter = require('express').Router();
 
@@ -26,7 +26,12 @@ bookRouter.put('/update', async (request, response) => {
 });
 
 bookRouter.delete('/delete/:id', async (request, response) => {
-	response.status(200).send('Kutsu poistaa kirja saapunut');
+	const id = request.params.id;
+	deleteOneBook(id).then((res)=> {
+		if (res) {
+			response.sendStatus(200);
+		}
+	});
 });
 
 

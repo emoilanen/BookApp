@@ -3,7 +3,7 @@ import * as React from 'react';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FormContainer } from "./FormContainer";
 import Button from "./Button";
 import styled from "@emotion/styled";
@@ -28,7 +28,16 @@ enum InputField {
 
 const BookForm = ({book, fetchBooks}: BookFormProps) => {
 
-	const [currentBook, setCurrentBook] = useState<Book>(book || {author: '', title: '', description: ''})
+	const [currentBook, setCurrentBook] = useState<Book>({author: '', title: '', description: ''})
+
+	useEffect(()=>{
+		setCurrentBook({
+			id: book?.id || '',
+			author: book?.author || '',
+			title: book?.title || '',
+			description: book?.description || ''
+		});
+	},[book]);
 
 	const handleEditFormField = useCallback((e: any, inputField: InputField) => {
 		const inputValue = e.target.value;
@@ -71,14 +80,17 @@ const BookForm = ({book, fetchBooks}: BookFormProps) => {
 	const handleDelete = useCallback(async () => {
 		if (currentBook?.id) {
 			try {
-				await deleteBook(currentBook?.id);
-			} catch (err) {
+				const response = await deleteBook(currentBook?.id);
+				if (response === 'OK') {
+					fetchBooks();
+					setCurrentBook({author: '', title: '', description: ''});
+				}			} catch (err) {
 			console.error('Error while saving new book', err);
 			}
 			return;
 		}
 		console.error('Book id is missing!');
-	}, [currentBook?.id]);
+	}, [currentBook?.id, fetchBooks]);
 
 	return <FormContainer>
       <FormControl>
@@ -113,14 +125,17 @@ const BookForm = ({book, fetchBooks}: BookFormProps) => {
 		  <ButtonRow>
 			  <Button
 					text={ 'Add new' }
-					onClick={handleAddNew}/>
+					onClick={handleAddNew}
+					disabled={currentBook.id ? true : false}/>
 			  <Button
 					text={ 'Save' }
-					onClick={handleUpdate}/>
+					onClick={handleUpdate}
+					disabled={currentBook.id ? false : true}/>
 			  <Button
 					text={'Delete'}
 					onClick={handleDelete}
-					color={'red'}/>
+					color={'red'}
+					disabled={currentBook.id ? false : true}/>
 		  </ButtonRow>
 	  </FormContainer>
 };

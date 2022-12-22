@@ -37,9 +37,14 @@ const saveNewBook = (book) => {
 	});
 };
 
- const deleteOneBook = () => {
-	return new Promise((resolve, reject) => {
-
+ const deleteOneBook = (id) => {
+	return new Promise(async (resolve, reject) => {
+		try{
+			await Book.findByIdAndDelete(id);
+			resolve(true);
+		} catch (err) {
+			reject(err);
+		}
 	});
 };
 

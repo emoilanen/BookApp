@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 const FormButton = styled.button(({color}) =>
 `
 	padding: 10px;
-	color: pink;
+	color: white;
 	background-color: ${color || 'green'};
 	cursor: pointer;
 	border: none;
@@ -16,15 +16,28 @@ const FormButton = styled.button(({color}) =>
 export interface ButtonProps {
 	text: string;
 	color?: string;
-	onClick: () => void;
+	onClick?: () => void;
+	disabled?: boolean;
 }
 
-const Button = ({text, color, onClick, ...props}:ButtonProps) => {
-	return <FormButton
+const Button = ({text, color, onClick, disabled}:ButtonProps) => {
+
+	return <> 
+	{ !disabled ?
+		<FormButton
 		color={color}
-		onClick={onClick}>
-		{ text }
-	</FormButton>;
+		onClick={onClick}
+		>
+		{ text } 
+	</FormButton>
+	:
+	<FormButton
+		color={'gray'}
+		>
+		{ text } 
+	</FormButton>
+	}
+	</>
 };
 
 export default Button;
