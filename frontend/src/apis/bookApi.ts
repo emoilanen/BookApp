@@ -20,7 +20,7 @@ export const saveNewBook = async (newBook: Book): Promise<string> => {
   });
 };
 
-export const updateBook = async (book: Book): Promise<Book[]> => {
+export const updateBook = async (book: Book): Promise<string> => {
   return axios.put(`${ baseApiUrl }/books/update`, book).then((res) => {
     return (res.data);
   }).catch(err => {

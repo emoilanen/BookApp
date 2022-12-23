@@ -2,19 +2,35 @@ const Book = require('../models/book')
 
 
  const getAllBooks = () => {
-	 return new Promise(async (resolve, reject) => {
-		 try {
-			 const books = await Book.find({});
-			 resolve(books);
-		 } catch (e) {
-			 reject();
-		}
-	});
+	 return new Promise((resolve, reject) => {
+		
+			  Book.find({})
+			 .then((result)=>{
+				if(result){
+					resolve(result);
+				} else {
+					reject('Error while fetching books from database');
+				}
+			 })
+	})
 };
 
- const updateBook = () => {
+ const updateBook = (book) => {
 	return new Promise((resolve, reject) => {
-
+		if(book?.id){
+			const data = {
+				title: book?.title,
+				author: book?.author,
+				description: book?.description
+			}
+			Book.findByIdAndUpdate(book.id, data).then((res) => {
+				if(res){
+					resolve(true);
+				} else {
+					reject('Error while updating the book');
+				}
+			});
+		}
 	});
 };
 
@@ -25,15 +41,12 @@ const saveNewBook = (book) => {
 			author: book.author || '',
 			description: book.description || ''
 		});
-		try {
 			const savedBook = await newBook.save();
 			if (savedBook) {
 				resolve(true);
-			}
+			} else {
 				reject('Error while saving new book');
-		} catch (err) {
-			console.error('Error while saving new book', err);
-		}
+			}
 	});
 };
 

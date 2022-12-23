@@ -39,7 +39,12 @@ const BookForm = ({book, fetchBooks}: BookFormProps) => {
 		});
 	},[book]);
 
-	
+	const emptyBookForm = useCallback(()=> {
+		fetchBooks();
+		setCurrentBook({author: '', title: '', description: ''});
+	},[fetchBooks]);
+
+
 	const handleEditFormField = useCallback((e: any, inputField: InputField) => {
 		const inputValue = e.target.value;
 
@@ -63,22 +68,24 @@ const BookForm = ({book, fetchBooks}: BookFormProps) => {
 		try {
 			const response = await saveNewBook(currentBook);
 			if (response === 'OK') {
-				fetchBooks();
-				setCurrentBook({author: '', title: '', description: ''});
+				emptyBookForm();
 			}
 		} catch (err) {
 			console.error('Error while saving new book', err);
 		}
-	}, [currentBook, fetchBooks]);
+	}, [currentBook, emptyBookForm]);
 
 
 	const handleUpdate = useCallback(async () => {
 		try {
-			await updateBook(currentBook);
+			const response = await updateBook(currentBook);
+			if (response === 'OK') {
+				emptyBookForm();
+			}
 		} catch (err) {
-			console.error('Error while saving new book', err);
+			console.error('Error while updating the book', err);
 		}
-	}, [currentBook]);
+	}, [currentBook, emptyBookForm]);
 
 
 	const handleDelete = useCallback(async () => {
@@ -86,15 +93,15 @@ const BookForm = ({book, fetchBooks}: BookFormProps) => {
 			try {
 				const response = await deleteBook(currentBook?.id);
 				if (response === 'OK') {
-					fetchBooks();
-					setCurrentBook({author: '', title: '', description: ''});
-				}			} catch (err) {
-			console.error('Error while saving new book', err);
+					emptyBookForm();
+				}			
+			} catch (err) {
+			console.error('Error while deleting the book', err);
 			}
 			return;
 		}
 		console.error('Book id is missing!');
-	}, [currentBook?.id, fetchBooks]);
+	}, [currentBook?.id, emptyBookForm]);
 
 	return <FormContainer>
       <FormControl>

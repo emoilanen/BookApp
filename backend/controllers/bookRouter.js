@@ -1,4 +1,4 @@
-const { getAllBooks, saveNewBook, deleteOneBook } = require('../services/bookService');
+const { getAllBooks, saveNewBook, deleteOneBook, updateBook } = require('../services/bookService');
 
 const bookRouter = require('express').Router();
 
@@ -22,7 +22,11 @@ bookRouter.post('/add_new', async (request, response) => {
 
 bookRouter.put('/update', async (request, response) => {
 	const data = request.body;
-	response.status(200).send('Kutsu päivittää kirja saapunut');
+	updateBook(data).then((res)=> {
+		if (res) {
+			response.sendStatus(200);
+		}
+	});
 });
 
 bookRouter.delete('/delete/:id', async (request, response) => {
