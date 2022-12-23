@@ -26,23 +26,31 @@ enum InputField {
 	DESCRIPTION = 'description'
 }
 
-const BookForm = ({book, fetchBooks}: BookFormProps) => {
+const BookForm = ({ book, fetchBooks }: BookFormProps) => {
 
-	const [currentBook, setCurrentBook] = useState<Book>({author: '', title: '', description: ''})
+	const [currentBook, setCurrentBook] = useState<Book>({ author: '', title: '', description: '' })
 
-	useEffect(()=>{
+	useEffect(() => {
 		setCurrentBook({
 			id: book?.id || '',
 			author: book?.author || '',
 			title: book?.title || '',
 			description: book?.description || ''
 		});
-	},[book]);
+	}, [book]);
 
-	const emptyBookForm = useCallback(()=> {
+	const emptyBookForm = useCallback(() => {
 		fetchBooks();
-		setCurrentBook({author: '', title: '', description: ''});
-	},[fetchBooks]);
+		setCurrentBook({ author: '', title: '', description: '' });
+	}, [fetchBooks]);
+
+	const validateForm = useCallback(() => {
+		if (currentBook?.author.length < 2 ||
+			currentBook?.title.length < 2) {
+			return false;
+		}
+		return true;
+	}, [currentBook?.author.length, currentBook?.title.length]);
 
 
 	const handleEditFormField = useCallback((e: any, inputField: InputField) => {
@@ -50,13 +58,13 @@ const BookForm = ({book, fetchBooks}: BookFormProps) => {
 
 		switch (inputField) {
 			case InputField.AUTHOR:
-				setCurrentBook({...currentBook, author: inputValue});
+				setCurrentBook({ ...currentBook, author: inputValue });
 				break;
 			case InputField.TITLE:
-				setCurrentBook({...currentBook, title: inputValue});
+				setCurrentBook({ ...currentBook, title: inputValue });
 				break;
 			case InputField.DESCRIPTION:
-				setCurrentBook({...currentBook, description: inputValue});
+				setCurrentBook({ ...currentBook, description: inputValue });
 				break;
 			default:
 				console.error('Invalid input type');
@@ -65,6 +73,8 @@ const BookForm = ({book, fetchBooks}: BookFormProps) => {
 
 
 	const handleAddNew = useCallback(async () => {
+		if (!validateForm()) return;
+
 		try {
 			const response = await saveNewBook(currentBook);
 			if (response === 'OK') {
@@ -73,10 +83,12 @@ const BookForm = ({book, fetchBooks}: BookFormProps) => {
 		} catch (err) {
 			console.error('Error while saving new book', err);
 		}
-	}, [currentBook, emptyBookForm]);
+	}, [currentBook, emptyBookForm, validateForm]);
 
 
 	const handleUpdate = useCallback(async () => {
+		if (!validateForm()) return;
+
 		try {
 			const response = await updateBook(currentBook);
 			if (response === 'OK') {
@@ -85,7 +97,7 @@ const BookForm = ({book, fetchBooks}: BookFormProps) => {
 		} catch (err) {
 			console.error('Error while updating the book', err);
 		}
-	}, [currentBook, emptyBookForm]);
+	}, [currentBook, emptyBookForm, validateForm]);
 
 
 	const handleDelete = useCallback(async () => {
@@ -94,9 +106,9 @@ const BookForm = ({book, fetchBooks}: BookFormProps) => {
 				const response = await deleteBook(currentBook?.id);
 				if (response === 'OK') {
 					emptyBookForm();
-				}			
+				}
 			} catch (err) {
-			console.error('Error while deleting the book', err);
+				console.error('Error while deleting the book', err);
 			}
 			return;
 		}
@@ -104,51 +116,53 @@ const BookForm = ({book, fetchBooks}: BookFormProps) => {
 	}, [currentBook?.id, emptyBookForm]);
 
 	return <FormContainer>
-      <FormControl>
-        <InputLabel htmlFor="component-outlined">Title</InputLabel>
-				<OutlinedInput
-					label="Title"
-				  value={ currentBook?.title || '' }
-			   	onChange={(e)=> handleEditFormField(e, InputField.TITLE)}
-				/>
-      </FormControl>
+		<FormControl>
+			<InputLabel htmlFor="component-outlined">Title</InputLabel>
+			<OutlinedInput
+				label="Title"
+				value={currentBook?.title || ''}
+				onChange={(e) => handleEditFormField(e, InputField.TITLE)}
+				error={currentBook?.title.length < 2}
+			/>
+		</FormControl>
 
-			<FormControl>
-        <InputLabel htmlFor="component-outlined">Author</InputLabel>
-        <OutlinedInput
-				  label="Author"
-					value={ currentBook?.author || '' }
-					onChange={(e)=> handleEditFormField(e, InputField.AUTHOR)}
-        />
-      </FormControl>
+		<FormControl>
+			<InputLabel htmlFor="component-outlined">Author</InputLabel>
+			<OutlinedInput
+				label="Author"
+				value={currentBook?.author || ''}
+				onChange={(e) => handleEditFormField(e, InputField.AUTHOR)}
+				error={currentBook?.author.length < 2}
+			/>
+		</FormControl>
 
-      <FormControl>
-        <InputLabel htmlFor="component-outlined">Description</InputLabel>
-			  <OutlinedInput
-				  multiline={ true }
-				  minRows={ 8 }
-				  value={currentBook?.description || ''}
-					label="Description"
-					onChange={(e)=> handleEditFormField(e, InputField.DESCRIPTION)}
-         />
-			</FormControl>
+		<FormControl>
+			<InputLabel htmlFor="component-outlined">Description</InputLabel>
+			<OutlinedInput
+				multiline={true}
+				minRows={8}
+				value={currentBook?.description || ''}
+				label="Description"
+				onChange={(e) => handleEditFormField(e, InputField.DESCRIPTION)}
+			/>
+		</FormControl>
 
-		  <ButtonRow>
-			  <Button
-					text={ 'Add new' }
-					onClick={handleAddNew}
-					disabled={currentBook.id ? true : false}/>
-			  <Button
-					text={ 'Save' }
-					onClick={handleUpdate}
-					disabled={currentBook.id ? false : true}/>
-			  <Button
-					text={'Delete'}
-					onClick={handleDelete}
-					color={'red'}
-					disabled={currentBook.id ? false : true}/>
-		  </ButtonRow>
-	  </FormContainer>
+		<ButtonRow>
+			<Button
+				text={'Add new'}
+				onClick={handleAddNew}
+				disabled={currentBook.id ? true : false} />
+			<Button
+				text={'Save'}
+				onClick={handleUpdate}
+				disabled={currentBook.id ? false : true} />
+			<Button
+				text={'Delete'}
+				onClick={handleDelete}
+				color={'red'}
+				disabled={currentBook.id ? false : true} />
+		</ButtonRow>
+	</FormContainer>
 };
 
 export default BookForm;
