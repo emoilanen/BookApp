@@ -10,6 +10,9 @@ const FormButton = styled.button(({color}) =>
 	border-radius: 5px;
 	font-size: 0.9em;
 	font-weight: bold;
+	&:hover {
+   	box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+    }
 `);
 
 
@@ -22,19 +25,19 @@ export interface ButtonProps {
 
 const Button = ({text, color, onClick, disabled}:ButtonProps) => {
 
-	return <> 
+	return <>
 	{ !disabled ?
 		<FormButton
 		color={color}
 		onClick={onClick}
 		>
-		{ text } 
+		{ text }
 	</FormButton>
 	:
 	<FormButton
 		color={'gray'}
 		>
-		{ text } 
+		{ text }
 	</FormButton>
 	}
 	</>
