@@ -1,5 +1,9 @@
 {
 	"folders": [
+    {
+      "name": "bookApp",
+      "path": "."
+    },
 		{
       "name": "frontend",
       "path": "frontend"

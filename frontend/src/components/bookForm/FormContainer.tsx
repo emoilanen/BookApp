@@ -1,5 +1,4 @@
 import styled from "@emotion/styled";
-import React from 'react';
 import { BREAKPOINT } from "../../theme";
 
 export const FormContainer = styled.div`
