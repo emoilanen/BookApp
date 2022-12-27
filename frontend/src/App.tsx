@@ -4,6 +4,8 @@ import Container from './components/layout/Container';
 import BookTable from './components/bookTable/BookTable';
 import BookForm from './components/bookForm/BookForm';
 import {fetchAllBooks} from './apis/bookApi';
+import Header from './components/layout/Header';
+import Footer from './components/layout/Footer';
 
 export interface Book {
   id?: string;
@@ -37,12 +39,14 @@ const App = () => {
     setEditableBook(book);
   },[formOpen]);
 
-  return (
+  return <>
+    <Header />
     <Container>
-      <BookForm book={ editableBook } fetchBooks={fetchBooks} />
-      <BookTable books={ books } openForm={ openForm } />
+        <BookForm book={ editableBook } fetchBooks={ fetchBooks } />
+        <BookTable books={ books } openForm={ openForm } />
     </Container>
-  );
+    <Footer />
+    </>;
 }
 
 export default App;
