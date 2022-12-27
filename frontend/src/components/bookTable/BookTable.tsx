@@ -1,4 +1,3 @@
-import * as React from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -34,7 +33,7 @@ const BookTable = ({books, openForm}: BookTableProps) => {
           { books &&
         	books.map(book => (
             <TableRow
-              key={book.title}
+              key={book?.id}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             	onClick={()=> handleOpenForm(book) }
 							style={{cursor: "pointer"}}

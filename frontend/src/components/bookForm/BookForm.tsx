@@ -1,5 +1,4 @@
 import { Book } from "../../App";
-import * as React from 'react';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -26,9 +25,17 @@ enum InputField {
 	DESCRIPTION = 'description'
 }
 
+enum ResponseStatus {
+	OK = 'OK',
+	CREATED = 'Created',
+}
+
 const BookForm = ({ book, fetchBooks }: BookFormProps) => {
 
-	const [currentBook, setCurrentBook] = useState<Book>({ author: '', title: '', description: '' })
+	const [ currentBook, setCurrentBook ] = useState<Book>({ author: '', title: '', description: '' });
+	const [ titleError, setTitleError ] = useState<boolean>(false);
+	const [ authorError, setAuthorError ] = useState<boolean>(false);
+
 
 	useEffect(() => {
 		setCurrentBook({
@@ -45,6 +52,10 @@ const BookForm = ({ book, fetchBooks }: BookFormProps) => {
 	}, [fetchBooks]);
 
 	const validateForm = useCallback(() => {
+
+		currentBook?.author.length < 2 ? setAuthorError(true): setAuthorError(false);
+		currentBook?.title.length < 2 ? setTitleError(true): setTitleError(false);
+
 		if (currentBook?.author.length < 2 ||
 			currentBook?.title.length < 2) {
 			return false;
@@ -59,9 +70,11 @@ const BookForm = ({ book, fetchBooks }: BookFormProps) => {
 		switch (inputField) {
 			case InputField.AUTHOR:
 				setCurrentBook({ ...currentBook, author: inputValue });
+				authorError && setAuthorError(false);
 				break;
 			case InputField.TITLE:
 				setCurrentBook({ ...currentBook, title: inputValue });
+				titleError && setTitleError(false);
 				break;
 			case InputField.DESCRIPTION:
 				setCurrentBook({ ...currentBook, description: inputValue });
@@ -69,15 +82,15 @@ const BookForm = ({ book, fetchBooks }: BookFormProps) => {
 			default:
 				console.error('Invalid input type');
 		}
-	}, [currentBook]);
+	}, [authorError, currentBook, titleError]);
 
 
-	const handleAddNew = useCallback(async () => {
+	const handleSaveNew = useCallback(async () => {
 		if (!validateForm()) return;
 
 		try {
 			const response = await saveNewBook(currentBook);
-			if (response === 'OK') {
+			if (response === ResponseStatus.CREATED) {
 				emptyBookForm();
 			}
 		} catch (err) {
@@ -91,7 +104,7 @@ const BookForm = ({ book, fetchBooks }: BookFormProps) => {
 
 		try {
 			const response = await updateBook(currentBook);
-			if (response === 'OK') {
+			if (response === ResponseStatus.CREATED) {
 				emptyBookForm();
 			}
 		} catch (err) {
@@ -104,7 +117,7 @@ const BookForm = ({ book, fetchBooks }: BookFormProps) => {
 		if (currentBook?.id) {
 			try {
 				const response = await deleteBook(currentBook?.id);
-				if (response === 'OK') {
+				if (response === ResponseStatus.OK) {
 					emptyBookForm();
 				}
 			} catch (err) {
@@ -122,7 +135,7 @@ const BookForm = ({ book, fetchBooks }: BookFormProps) => {
 				label="Title"
 				value={currentBook?.title || ''}
 				onChange={(e) => handleEditFormField(e, InputField.TITLE)}
-				error={currentBook?.title.length < 2}
+				error={titleError}
 			/>
 		</FormControl>
 
@@ -132,7 +145,7 @@ const BookForm = ({ book, fetchBooks }: BookFormProps) => {
 				label="Author"
 				value={currentBook?.author || ''}
 				onChange={(e) => handleEditFormField(e, InputField.AUTHOR)}
-				error={currentBook?.author.length < 2}
+				error={authorError}
 			/>
 		</FormControl>
 
@@ -149,9 +162,9 @@ const BookForm = ({ book, fetchBooks }: BookFormProps) => {
 
 		<ButtonRow>
 			<Button
-				text={'Add new'}
-				onClick={handleAddNew}
-				disabled={currentBook.id ? true : false} />
+				text={'Save new'}
+				onClick={handleSaveNew}
+				 />
 			<Button
 				text={'Save'}
 				onClick={handleUpdate}
