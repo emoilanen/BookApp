@@ -132,7 +132,7 @@ const BookForm = ({ book, fetchBooks }: BookFormProps) => {
 
 	return <FormContainer>
 		<FormControl>
-			<InputLabel htmlFor="component-outlined">Title</InputLabel>
+			<InputLabel>Title</InputLabel>
 			<OutlinedInput
 				label="Title"
 				value={currentBook?.title || ''}
@@ -142,7 +142,7 @@ const BookForm = ({ book, fetchBooks }: BookFormProps) => {
 		</FormControl>
 
 		<FormControl>
-			<InputLabel htmlFor="component-outlined">Author</InputLabel>
+			<InputLabel>Author</InputLabel>
 			<OutlinedInput
 				label="Author"
 				value={currentBook?.author || ''}
@@ -152,7 +152,7 @@ const BookForm = ({ book, fetchBooks }: BookFormProps) => {
 		</FormControl>
 
 		<FormControl>
-			<InputLabel htmlFor="component-outlined">Description</InputLabel>
+			<InputLabel>Description</InputLabel>
 			<OutlinedInput
 				multiline={true}
 				minRows={8}
@@ -176,8 +176,8 @@ const BookForm = ({ book, fetchBooks }: BookFormProps) => {
 				onClick={handleDelete}
 				color={'red'}
 				disabled={ currentBook.id ? false : true } />
-			<IconButton>
-				<RefreshOutlinedIcon fontSize="large" onClick={emptyBookForm} />
+			<IconButton onClick={emptyBookForm}>
+				<RefreshOutlinedIcon fontSize="large" />
 			</IconButton>
 		</ButtonRow>
 	</FormContainer>
