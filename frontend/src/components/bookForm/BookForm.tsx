@@ -7,6 +7,8 @@ import { FormContainer } from "./FormContainer";
 import Button from "./Button";
 import styled from "@emotion/styled";
 import { deleteBook, saveNewBook, updateBook } from "../../apis/bookApi";
+import RefreshOutlinedIcon from '@mui/icons-material/RefreshOutlined';
+import { IconButton } from "@mui/material";
 
 const ButtonRow = styled.div`
 	display: flex;
@@ -173,7 +175,10 @@ const BookForm = ({ book, fetchBooks }: BookFormProps) => {
 				text={'Delete'}
 				onClick={handleDelete}
 				color={'red'}
-				disabled={currentBook.id ? false : true} />
+				disabled={ currentBook.id ? false : true } />
+			<IconButton>
+				<RefreshOutlinedIcon fontSize="large" onClick={emptyBookForm} />
+			</IconButton>
 		</ButtonRow>
 	</FormContainer>
 };
