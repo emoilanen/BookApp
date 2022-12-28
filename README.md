@@ -14,10 +14,16 @@ This is a small REST-api sample app where user can add, remove and edit books.
 2. Install node modules, run:
 
 ```
-npm installAll
+npm run installAll
 ```
 
-3. Start react app and develoment server, run:
+3. Open project on VSCode workspace, run
+
+```
+code bookApp.code-workspace
+```
+
+4. Start react app and develoment server, run:
 
 ```
 npm run dev
@@ -25,10 +31,6 @@ npm run dev
 
 The bookApp will be running on http://localhost:3000
 
-4. Open project on VSCode workspace, run
 
-```
-code bookApp.code-workspace
-```
 
 **NOTE! To use the backend / database, you need .env file to root of backend folder! That file will specify the port for backend and secret key for database**
